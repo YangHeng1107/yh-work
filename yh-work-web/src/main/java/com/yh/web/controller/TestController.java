@@ -1,25 +1,14 @@
-/**
- * *****************************************************
- * Copyright (C) 2019 bytedance.com. All Rights Reserved
- * This file is part of bytedance EA project.
- * Unauthorized copy of this file, via any medium is strictly prohibited.
- * Proprietary and Confidential.
- * ****************************************************
- * <p>
- * History:
- * <author>            <time>          <version>          <desc>
- * 作者姓名           修改时间           版本号            描述
- */
 package com.yh.web.controller;
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.yh.biz.TestService;
-import com.yh.common.bo.TeacherEntity;
-import com.yh.common.response.PlainResult;
-import com.yh.dal.entity.mysql.UserInfoPo;
 import com.yh.common.bo.CourseEntity;
 import com.yh.common.bo.StudentEntity;
+import com.yh.common.bo.TeacherEntity;
+import com.yh.common.response.PlainResult;
+import com.yh.common.util.FileUtil;
+import com.yh.dal.entity.mysql.UserInfoPo;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,14 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author yangheng
@@ -48,17 +35,17 @@ public class TestController {
     @Resource
     private HttpServletResponse response;
     @Resource
-    private TestService tastService;
+    private TestService testService;
 
     @GetMapping("/test")
     public PlainResult test() {
 
-        List<UserInfoPo> test = tastService.test();
+        List<UserInfoPo> test = testService.test();
         return new PlainResult<>(test);
     }
 
     @GetMapping("/down")
-    public void down() throws IOException {
+    public void down() {
         List<StudentEntity> list = new ArrayList<>();
         StudentEntity studentEntity = new StudentEntity();
         studentEntity.setBirthday(new Date());
@@ -72,14 +59,14 @@ public class TestController {
         studentEntity1.setSex(2);
         list.add(studentEntity);
         list.add(studentEntity1);
-
-
-
+        Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(),
+                CourseEntity.class, list);
+        FileUtil.downExcel(workbook, "测试", response);
 
     }
 
     @GetMapping("/down1")
-    public void down1() throws IOException {
+    public void down1() {
         List<StudentEntity> studentList = new ArrayList<>();
         StudentEntity studentEntity = new StudentEntity();
         studentEntity.setBirthday(new Date());
@@ -93,7 +80,6 @@ public class TestController {
         studentEntity1.setSex(2);
         studentList.add(studentEntity);
         studentList.add(studentEntity1);
-
         List<CourseEntity> list = new ArrayList<>();
         CourseEntity courseEntity = new CourseEntity();
         courseEntity.setStudents(studentList);
@@ -102,16 +88,9 @@ public class TestController {
         courseEntity.setMathTeacher(teacherEntity);
         courseEntity.setName("语文");
         list.add(courseEntity);
-
-
         Workbook workbook = ExcelExportUtil.exportExcel(new ExportParams(),
                 CourseEntity.class, list);
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("content-Type", "application/vnd.ms-excel");
-        response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("aaa.xls", "UTF-8"));
-        workbook.write(response.getOutputStream());
-
-
+        FileUtil.downExcel(workbook, "测试", response);
     }
 
 }

@@ -1,20 +1,5 @@
-/**
- * *****************************************************
- * Copyright (C) 2019 bytedance.com. All Rights Reserved
- * This file is part of bytedance EA project.
- * Unauthorized copy of this file, via any medium is strictly prohibited.
- * Proprietary and Confidential.
- * ****************************************************
- * <p>
- * History:
- * <author>            <time>          <version>          <desc>
- * 作者姓名           修改时间           版本号            描述
- */
 package com.yh.common.util;
 
-import cn.afterturn.easypoi.excel.ExcelExportUtil;
-import cn.afterturn.easypoi.excel.entity.ExportParams;
-import com.yh.common.bo.StudentEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -33,7 +18,7 @@ import java.net.URLEncoder;
 @Slf4j
 public class FileUtil {
 
-    public void downExcel(Workbook workbook, String fileName, HttpServletResponse response) {
+    public static void downExcel(Workbook workbook, String fileName, HttpServletResponse response) {
         try {
             response.setCharacterEncoding("UTF-8");
             response.setHeader("content-Type", "application/vnd.ms-excel");
